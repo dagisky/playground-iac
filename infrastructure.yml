@@ -39,11 +39,34 @@ Resources:
     Type: AWS::IAM::InstanceProfile
     Properties: 
       Roles:
-        - UdacityS3ReadOnlyEC2
-  UdacityS3ReadOnlyEC2:
+        - UdacityS3ReadOnlyEC3
+        - StackResourceExportAccess
+  UdacityS3ReadOnlyEC3:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: UdacityS3ReadOnlyEC2
+      RoleName: UdacityS3ReadOnlyEC3
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: S3Access
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+            - Effect: Allow
+              Action:
+              - s3:*
+              Resource: "*"
+  StackResourceExportAccess:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: StackResourceExportAccess
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -62,14 +85,7 @@ Resources:
                 Action:
                   - cloudformation:ListExports
                 Resource: "*"
-        - PolicyName: S3Access
-          PolicyDocument:
-            Version: '2012-10-17'
-            Statement:
-            - Effect: Allow
-              Action:
-              - s3:*
-              Resource: "*"
+  
   VPC: 
     Type: AWS::EC2::VPC
     Properties:
@@ -90,7 +106,6 @@ Resources:
       InternetGatewayId: !Ref InternetGateway
       VpcId: !Ref VPC
 
-  
   
   
   PublicSubnet1: 
