@@ -39,8 +39,7 @@ Resources:
     Type: AWS::IAM::InstanceProfile
     Properties: 
       Roles:
-        - UdacityS3ReadOnlyEC3
-        - StackResourceExportAccess
+        - !Ref UdacityS3ReadOnlyEC3
   UdacityS3ReadOnlyEC3:
     Type: AWS::IAM::Role
     Properties:
